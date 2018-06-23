@@ -27,17 +27,8 @@ public class DatabaseServiceMaster
 		IDatabaseService dbs;
 		for(DB_Table t: DatabaseProperties.tables)
 		{
-			try
-			{
-				dbs = (IDatabaseService) t.getDBS_Class().newInstance();
-				databaseServices.put(t, dbs);
-			} catch (InstantiationException e)
-			{
-				e.printStackTrace();
-			} catch (IllegalAccessException e)
-			{
-				e.printStackTrace();
-			}
+			dbs = new DatabaseServiceGeneric(t);
+			databaseServices.put(t, dbs);
 		}
 	}
 
