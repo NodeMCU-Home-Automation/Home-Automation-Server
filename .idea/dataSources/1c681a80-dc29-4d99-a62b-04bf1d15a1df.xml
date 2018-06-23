@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="homeautomation@localhost">
+  <database-model serializer="dbm" rdbms="MYSQL" format-version="4.4">
+    <root id="1"/>
+    <schema id="2" parent="1" name="homeautomation">
+      <Current>1</Current>
+      <Visible>1</Visible>
+    </schema>
+    <schema id="3" parent="1" name="information_schema"/>
+    <schema id="4" parent="1" name="kassensystem"/>
+    <schema id="5" parent="1" name="mysql"/>
+    <schema id="6" parent="1" name="performance_schema"/>
+    <schema id="7" parent="1" name="sys"/>
+    <table id="8" parent="2" name="roomclimate"/>
+    <column id="9" parent="8" name="id">
+      <Position>1</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="10" parent="8" name="timestamp">
+      <Position>2</Position>
+      <DataType>datetime|0</DataType>
+    </column>
+    <column id="11" parent="8" name="temperature">
+      <Position>3</Position>
+      <DataType>float|0</DataType>
+    </column>
+    <column id="12" parent="8" name="humidity">
+      <Position>4</Position>
+      <DataType>float|0</DataType>
+    </column>
+    <index id="13" parent="8" name="roomclimate_id_uindex">
+      <ColNames>id</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <key id="14" parent="8" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <key id="15" parent="8" name="roomclimate_id_uindex">
+      <ColNames>id</ColNames>
+      <UnderlyingIndexName>roomclimate_id_uindex</UnderlyingIndexName>
+    </key>
+  </database-model>
+</dataSource>

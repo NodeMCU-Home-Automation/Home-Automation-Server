@@ -99,13 +99,13 @@ public interface IDatabaseService
 	 * @param columns all the tables column names
 	 * @return executable sql-query
 	 */
-	static String buildAddQuery(String tablename, Object [] columns)
+	static String buildAddQuery(String tablename, String [] columns)
 	{
 		String query = "INSERT INTO " + DatabaseProperties.getDatabase() + "." + tablename + "(";
 
 		for(int i = 0; i < columns.length; i++)
 		{
-			query += (String) columns[i];
+			query += columns[i];
 			if(i < columns.length - 1)
 				query += ", ";
 		}

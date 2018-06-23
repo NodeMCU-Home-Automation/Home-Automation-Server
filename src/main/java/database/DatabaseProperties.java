@@ -1,6 +1,6 @@
 package database;
 
-import java.util.HashMap;
+import database.database_services.ClimateDatabaseService;
 
 public class DatabaseProperties
 {
@@ -13,30 +13,24 @@ public class DatabaseProperties
 
 	/**
 	 * Definition of all DB-Tables and their DatabaseService-Class
-	 * Primary Key (PK) has to be incremented automatically by the database.
-	 * PK hast to contain the String "id"
-	 * No other column-name is allowed to contain String "id"
 	 */
 	public enum DB_Table
 	{
 		roomclimate(
 				"roomclimate",
-				new HashMap<String, Class>() {
-					{
-					put("id", Integer.class);
-					put("timestamp", Object.class);
-					put("temperature", Float.class);
-					put("humidity", Float.class);}
-				}
+				new String [] {"id", "timestamp", "temperature", "humidity"},
+				ClimateDatabaseService.class
 		);
 
 		private final String name;
-		private final HashMap<String, Class> columns;
+		private final String [] columns;
+		private Class DBS_Class;
 
-		DB_Table(String name, HashMap<String, Class> columns)
+		DB_Table(String name, String [] columns, Class DBS_Class)
 		{
 			this.name = name;
 			this.columns = columns;
+			this.DBS_Class = DBS_Class;
 		}
 
 		public String getName()
@@ -44,20 +38,20 @@ public class DatabaseProperties
 			return name;
 		}
 
-		public HashMap<String, Class> getColumns()
+		public String [] getColumns()
 		{
-			return this.columns;
+			return columns;
 		}
 
-		public Object [] getColumnsArray()
+		public Class getDBS_Class()
 		{
-			return columns.keySet().toArray();
+			return DBS_Class;
 		}
 	}
 
 	/*DatabaseProperties()
 	{
-		columns = DB_Table.class.getEnumConstants();
+		tables = DB_Table.class.getEnumConstants();
 	}*/
 
 	public static String getUrl() {
