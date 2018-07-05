@@ -29,6 +29,7 @@ public class DatabaseServiceMaster
 		{
 			try
 			{
+				// TODO set connection as transfer-parameter to constructor
 				dbs = (IDatabaseService) t.getDBS_Class().newInstance();
 				databaseServices.put(t, dbs);
 			} catch (InstantiationException e)
@@ -41,16 +42,47 @@ public class DatabaseServiceMaster
 		}
 	}
 
-	public void addData(HashMap<String, Object> dataMap, DB_Table DB_Table)
+	public void addData(HashMap<String, Object> dataMap, DB_Table db_table)
 	{
 		try
 		{
-			databaseServices.get(DB_Table).addData(dataMap);
+			databaseServices.get(db_table).addData(dataMap);
 		} catch (SQLException e)
 		{
 			e.printStackTrace();
 		}
 	}
 
+	public HashMap<String, Object> getDatasetById(int id, DB_Table db_table)
+	{
+		try
+		{
+			return databaseServices.get(db_table).getDatasetById(id);
+		} catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public void deleteData(String valueColumn, Object value, DB_Table db_table)
+	{
+		try {
+			databaseServices.get(db_table).deleteData(valueColumn, value);
+		} catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	public void editData(HashMap<String, Object> dataMap, int id, DB_Table db_table)
+	{
+		try {
+			databaseServices.get(db_table).updateData(dataMap, id);
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+	}
 
 }
