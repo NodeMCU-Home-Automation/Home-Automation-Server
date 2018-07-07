@@ -1,5 +1,7 @@
 package database;
 
+import  database.DatabaseProperties.*;
+
 public class QueryBuilder
 {
 	/**
@@ -8,30 +10,29 @@ public class QueryBuilder
 	 * Query is built according to the following pattern:
 	 *
 	 * 		"INSERT INTO  database_name " +
-	 *		".table_name(primary_key, column_1, column_2,... column_i) " +
+	 *		".table_name(primary_key, column_2, column_3,... column_i) " +
 	 *		"VALUES(DEFAULT, ?, ?,... ?)";
 	 *
-	 * @param tablename Name of database table name
-	 * @param columns all the tables column names
+	 * @param table enum of DB_Table specified in {@Link DatabaseProperties}
 	 * @return executable sql-query
 	 */
-	public static String buildAddQuery(String tablename, String [] columns)
+	public static String buildAddQuery(DB_Table table)
 	{
-		String query = "INSERT INTO " + DatabaseProperties.getDatabase() + "." + tablename + "(";
+		String query = "INSERT INTO " + DatabaseProperties.getDatabase() + "." + table.name() + "(" + table.getPrimaryKey() + ", ";
 
-		for(int i = 0; i < columns.length; i++)
+		for(int i = 0; i < table.getColumns().length; i++)
 		{
-			query += columns[i];
-			if(i < columns.length - 1)
+			query += table.getColumns()[i];
+			if(i < table.getColumns().length - 1)
 				query += ", ";
 		}
 
 		query += ") VALUES(DEFAULT, ";
 
-		for(int i = 0; i < columns.length-1; i++)
+		for(int i = 0; i < table.getColumns().length; i++)
 		{
 			query += "?";
-			if(i < columns.length - 2)
+			if(i < table.getColumns().length - 1)
 				query += ", ";
 		}
 
@@ -42,26 +43,25 @@ public class QueryBuilder
 
 	/**
 	 *
-	 * 		"SELECT primary_key, column_1, column_2,... column_i " +
+	 * 		"SELECT primary_key, column_2, column_3,... column_i " +
 	 *		"FROM database_name.table_name "
-	 *		"WHERE primary_key = id"
-	 * @param tablename
-	 * @param id
+	 *		"WHERE primary_key = " + id
+	 * @param table enum of DB_Table specified in {@Link DatabaseProperties}
 	 * @return
 	 */
-	public static String buildGetDatasetByIdQuery(String tablename, int id, String [] columns)
+	public static String buildGetDatasetByIdQuery(DB_Table table, int id)
 	{
-		String query = "SELECT ";
+		String query = "SELECT " + table.getPrimaryKey() + ", ";
 
-		for(int i = 0; i < columns.length; i++)
+		for(int i = 0; i < table.getColumns().length; i++)
 		{
-			query += columns[i];
-			if(i < columns.length -1)
+			query += table.getColumns()[i];
+			if(i < table.getColumns().length - 1)
 				query += ", ";
 		}
 
-		query += " FROM " + DatabaseProperties.getDatabase() + "." + tablename +
-				" WHERE " + columns[0] /*PK*/ + " = " + id;
+		query += " FROM " + DatabaseProperties.getDatabase() + "." + table.getName() +
+				" WHERE " + table.getPrimaryKey() + " = " + id;
 
 		return query;
 	}
@@ -70,23 +70,58 @@ public class QueryBuilder
 	 * Builds query to delete
 	 *
 	 * 		"DELETE FROM database_name.table_name " +
-	 *		"WHERE column = value";
+	 *		"WHERE column = " + value
+	 *
+	 * @param table enum of DB_Table specified in {@Link DatabaseProperties}
 	 * @return
 	 */
-	public static String buildDeleteQuery(String tablename, String valueColumn, Object value)
+	public static String buildDeleteQuery(DB_Table table, String valueColumn, Object value)
 	{
 		String query =
-				"DELETE FROM " + DatabaseProperties.getDatabase() + "." + tablename +
+				"DELETE FROM " + DatabaseProperties.getDatabase() + "." + table.getName() +
 				" WHERE " + valueColumn + " = " + value;
 
 		return query;
 	}
 
-	public static String buildUpdateQuery(String tablename, String [] columns)
-
-	public static String buildGetTableQuery(String tablename, String [] columns)
+	/**
+	 *
+	 * 		"UPDATE database_name.table_name " +
+	 *		"SET column_1 = ?, column_2 = ?,... column_i = ? " +
+	 *		"WHERE primary_key = " + id
+	 *
+	 * @param table enum of DB_Table specified in {@Link DatabaseProperties}
+	 * @return
+	 */
+	public static String buildUpdateQuery(DB_Table table, int id)
 	{
+		String query = "UPDATE " + DatabaseProperties.getDatabase() + "." + table.getName() +
+				" SET ";
 
-		return null;
+		for(int i = 0; i < table.getColumns().length; i++)
+		{
+			query += table.getColumns()[i] + " = ?";
+			if(i < table.getColumns().length - 1)
+				query += ", ";
+		}
+
+		query += " WHERE " + table.getPrimaryKey() + " = " + id;
+
+		return query;
+	}
+
+	/**
+	 *
+	 * 		"SELECT primary_key FROM database_Name.table_name " +
+	 *		"WHERE primary_key = " + id
+	 *
+	 * @param table enum of DB_Table specified in {@Link DatabaseProperties}
+	 * @param id id of dataset which existence shall be checker
+	 * @return
+	 */
+	public static String buildExistsDatasetWithIdQuery(DB_Table table, int id)
+	{
+		return "SELECT " + table.getPrimaryKey() + " FROM " + DatabaseProperties.getDatabase() + "." +
+				table.getName() + " WHERE " + table.getPrimaryKey() + " = " + id;
 	}
 }

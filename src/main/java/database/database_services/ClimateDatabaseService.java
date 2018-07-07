@@ -13,16 +13,9 @@ public class ClimateDatabaseService implements IDatabaseService
 {
 	private Connection connection;
 
-	public ClimateDatabaseService()
+	public ClimateDatabaseService(Connection connection)
 	{
-		// TODO get connection as transfer-parameter from DatabaseServiceMaster
-		try
-		{
-			this.connection = IDatabaseService.connect();
-		} catch (Exception e)
-		{
-			e.printStackTrace();
-		}
+		this.connection = connection;
 	}
 
 	@Override
@@ -43,13 +36,13 @@ public class ClimateDatabaseService implements IDatabaseService
 	{
 		IDatabaseService.checkConnection(connection);
 
-		String query = QueryBuilder.buildAddQuery(roomclimate.getName(), roomclimate.getColumns());
+		String query = QueryBuilder.buildAddQuery(roomclimate);
 
 		PreparedStatement pst = connection.prepareStatement(query);
 
-		pst.setObject(1, dataMap.get(roomclimate.getColumns()[1]));
-		pst.setFloat(2, (Float) dataMap.get(roomclimate.getColumns()[2]));
-		pst.setFloat(3, (Float) dataMap.get(roomclimate.getColumns()[3]));
+		pst.setObject(1, dataMap.get(roomclimate.getColumns()[0]));
+		pst.setFloat(2, (Float) dataMap.get(roomclimate.getColumns()[1]));
+		pst.setFloat(3, (Float) dataMap.get(roomclimate.getColumns()[2]));
 
 		pst.executeUpdate();
 	}
@@ -59,7 +52,7 @@ public class ClimateDatabaseService implements IDatabaseService
 	{
 		IDatabaseService.checkConnection(connection);
 
-		String query = QueryBuilder.buildGetDatasetByIdQuery(roomclimate.getName(), id, roomclimate.getColumns());
+		String query = QueryBuilder.buildGetDatasetByIdQuery(roomclimate, id);
 
 		PreparedStatement pst = connection.prepareStatement(query);
 
@@ -68,11 +61,11 @@ public class ClimateDatabaseService implements IDatabaseService
 		HashMap<String, Object> result = new HashMap<>();
 		while(rs.next())
 		{
-			result.put(roomclimate.getColumns()[0], rs.getInt(roomclimate.getColumns()[0]));
-			result.put(roomclimate.getColumns()[1], IDatabaseService
-					.convertSqlTimestampToJodaDateTime(rs.getTimestamp(roomclimate.getColumns()[1])));
+			result.put(roomclimate.getPrimaryKey(), rs.getInt(roomclimate.getPrimaryKey()));
+			result.put(roomclimate.getColumns()[0], IDatabaseService
+					.convertSqlTimestampToJodaDateTime(rs.getTimestamp(roomclimate.getColumns()[0])));
+			result.put(roomclimate.getColumns()[1], rs.getFloat(roomclimate.getColumns()[1]));
 			result.put(roomclimate.getColumns()[2], rs.getFloat(roomclimate.getColumns()[2]));
-			result.put(roomclimate.getColumns()[3], rs.getFloat(roomclimate.getColumns()[3]));
 
 			return result;
 		}
@@ -86,7 +79,7 @@ public class ClimateDatabaseService implements IDatabaseService
 		IDatabaseService.checkConnection(connection);
 
 		String query = QueryBuilder
-				.buildDeleteQuery(roomclimate.getName(), valueColumn, value);
+				.buildDeleteQuery(roomclimate, valueColumn, value);
 
 		PreparedStatement pst = connection.prepareStatement(query);
 
@@ -98,13 +91,29 @@ public class ClimateDatabaseService implements IDatabaseService
 	{
 		IDatabaseService.checkConnection(connection);
 
-		String query = QueryBuilder.buildUpdateQuery(roomclimate.getName(), roomclimate.getColumns(), )
+		String query = QueryBuilder.buildUpdateQuery(roomclimate, id);
+
+		PreparedStatement pst = connection.prepareStatement(query);
+
+		pst.setObject(1, dataMap.get(roomclimate.getColumns()[0]));
+		pst.setFloat(2, (Float) dataMap.get(roomclimate.getColumns()[1]));
+		pst.setFloat(3, (Float) dataMap.get(roomclimate.getColumns()[2]));
+
+		pst.executeUpdate();
 	}
 
 	@Override
-	public boolean existsData(String column, Object value) throws SQLException
+	public boolean existsData(int id) throws SQLException
 	{
-		// TODO
+		String query = QueryBuilder.buildExistsDatasetWithIdQuery(roomclimate, id);
+
+		PreparedStatement pst = connection.prepareStatement(query);
+
+		ResultSet rs = pst.executeQuery();
+
+		if(rs.next() && rs.getInt(roomclimate.getPrimaryKey()) != 0)
+			return true;
+
 		return false;
 	}
 }

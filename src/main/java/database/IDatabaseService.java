@@ -113,5 +113,5 @@ public interface IDatabaseService
 
 	void updateData(HashMap<String, Object> dataMap, int id) throws SQLException;
 
-	boolean existsData(String column, Object value) throws SQLException;
+	boolean existsData(int id) throws SQLException;
 }

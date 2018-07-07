@@ -18,17 +18,20 @@ public class DatabaseProperties
 	{
 		roomclimate(
 				"roomclimate",
-				new String [] {"id", "timestamp", "temperature", "humidity"},
+				new String [] {"timestamp", "temperature", "humidity"},
+				"id",
 				ClimateDatabaseService.class
 		);
 
 		private final String name;
 		private final String [] columns;
+		private final String primaryKey;
 		private Class DBS_Class;
 
-		DB_Table(String name, String [] columns, Class DBS_Class)
+		DB_Table(String name, String [] columns, String primaryKey, Class DBS_Class)
 		{
 			this.name = name;
+			this.primaryKey = primaryKey;
 			this.columns = columns;
 			this.DBS_Class = DBS_Class;
 		}
@@ -46,6 +49,11 @@ public class DatabaseProperties
 		public Class getDBS_Class()
 		{
 			return DBS_Class;
+		}
+
+		public String getPrimaryKey()
+		{
+			return primaryKey;
 		}
 	}
 

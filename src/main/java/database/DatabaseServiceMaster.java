@@ -2,6 +2,7 @@ package database;
 
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -29,13 +30,19 @@ public class DatabaseServiceMaster
 		{
 			try
 			{
-				// TODO set connection as transfer-parameter to constructor
-				dbs = (IDatabaseService) t.getDBS_Class().newInstance();
+				dbs = (IDatabaseService) t.getDBS_Class().getDeclaredConstructor(Connection.class)
+						.newInstance(connection);
 				databaseServices.put(t, dbs);
 			} catch (InstantiationException e)
 			{
 				e.printStackTrace();
 			} catch (IllegalAccessException e)
+			{
+				e.printStackTrace();
+			} catch (InvocationTargetException e)
+			{
+				e.printStackTrace();
+			} catch (NoSuchMethodException e)
 			{
 				e.printStackTrace();
 			}
@@ -75,7 +82,7 @@ public class DatabaseServiceMaster
 		}
 	}
 
-	public void editData(HashMap<String, Object> dataMap, int id, DB_Table db_table)
+	public void updateData(HashMap<String, Object> dataMap, int id, DB_Table db_table)
 	{
 		try {
 			databaseServices.get(db_table).updateData(dataMap, id);
@@ -83,6 +90,17 @@ public class DatabaseServiceMaster
 		{
 			e.printStackTrace();
 		}
+	}
+
+	public boolean existsData(int id, DB_Table db_table)
+	{
+		try {
+			return databaseServices.get(db_table).existsData(id);
+		} catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 }

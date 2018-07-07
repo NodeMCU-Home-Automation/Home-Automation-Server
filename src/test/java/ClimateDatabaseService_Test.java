@@ -9,15 +9,17 @@ import java.util.Map;
 
 import static database.DatabaseProperties.DB_Table.*;
 
-public class DatabaseServiceMaster_Test
+public class ClimateDatabaseService_Test
 {
 	static DatabaseServiceMaster dsm = new DatabaseServiceMaster();
 
 	public static void main(String [] args)
 	{
 		addData();
+		System.out.println(existsDataWithId(916) ? "existiert" : "existiert nicht");
 		getDatasetById(916);
-		//deleteData(918);
+		updateData(916);
+		//deleteData(928);
 	}
 
 	static void addData()
@@ -44,5 +46,20 @@ public class DatabaseServiceMaster_Test
 	static void deleteData(int value)
 	{
 		dsm.deleteData("id", value, roomclimate);
+	}
+
+	static void updateData(int id)
+	{
+		HashMap<String, Object> climateData = new HashMap<>();
+		climateData.put("timestamp", IDatabaseService.convertJodaDateTimeToSqlTimestamp(DateTime.now()));
+		climateData.put("temperature", 191919.0f);
+		climateData.put("humidity", 191919.0f);
+
+		dsm.updateData(climateData, id, roomclimate);
+	}
+
+	static boolean existsDataWithId(int id)
+	{
+		return dsm.existsData(id, roomclimate);
 	}
 }
