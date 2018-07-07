@@ -3,6 +3,7 @@ import database.DatabaseServiceMaster;
 import database.IDatabaseService;
 import org.joda.time.DateTime;
 
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,12 +30,25 @@ public class ClimateDatabaseService_Test
 		climateData.put("temperature", 33.10f);
 		climateData.put("humidity", 99.0f);
 
-		dsm.addData(climateData, roomclimate);
+		try
+		{
+			dsm.addData(climateData, roomclimate);
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	static void getDatasetById(int id)
 	{
-		HashMap<String, Object> climateData = dsm.getDatasetById(id, roomclimate);
+		HashMap<String, Object> climateData = null;
+		try
+		{
+			climateData = dsm.getDatasetById(id, roomclimate);
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
 
 		for(Map.Entry<String, Object> entry: climateData.entrySet())
 		{
@@ -45,7 +59,13 @@ public class ClimateDatabaseService_Test
 
 	static void deleteData(int value)
 	{
-		dsm.deleteData("id", value, roomclimate);
+		try
+		{
+			dsm.deleteData("id", value, roomclimate);
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	static void updateData(int id)
@@ -55,11 +75,24 @@ public class ClimateDatabaseService_Test
 		climateData.put("temperature", 191919.0f);
 		climateData.put("humidity", 191919.0f);
 
-		dsm.updateData(climateData, id, roomclimate);
+		try
+		{
+			dsm.updateData(climateData, id, roomclimate);
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	static boolean existsDataWithId(int id)
 	{
-		return dsm.existsData(id, roomclimate);
+		try
+		{
+			return dsm.existsData(id, roomclimate);
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return false;
 	}
 }

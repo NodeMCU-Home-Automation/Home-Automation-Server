@@ -49,58 +49,29 @@ public class DatabaseServiceMaster
 		}
 	}
 
-	public void addData(HashMap<String, Object> dataMap, DB_Table db_table)
+	public void addData(HashMap<String, Object> dataMap, DB_Table db_table)  throws SQLException
 	{
-		try
-		{
-			databaseServices.get(db_table).addData(dataMap);
-		} catch (SQLException e)
-		{
-			e.printStackTrace();
-		}
+		databaseServices.get(db_table).addData(dataMap);
 	}
 
-	public HashMap<String, Object> getDatasetById(int id, DB_Table db_table)
+	public HashMap<String, Object> getDatasetById(int id, DB_Table db_table) throws SQLException
 	{
-		try
-		{
-			return databaseServices.get(db_table).getDatasetById(id);
-		} catch(SQLException e)
-		{
-			e.printStackTrace();
-		}
-		return null;
+		return databaseServices.get(db_table).getDatasetById(id);
 	}
 
-	public void deleteData(String valueColumn, Object value, DB_Table db_table)
+	public void deleteData(String valueColumn, Object value, DB_Table db_table) throws SQLException
 	{
-		try {
-			databaseServices.get(db_table).deleteData(valueColumn, value);
-		} catch(SQLException e)
-		{
-			e.printStackTrace();
-		}
+		databaseServices.get(db_table).deleteData(valueColumn, value);
 	}
 
-	public void updateData(HashMap<String, Object> dataMap, int id, DB_Table db_table)
+	public void updateData(HashMap<String, Object> dataMap, int id, DB_Table db_table) throws SQLException
 	{
-		try {
-			databaseServices.get(db_table).updateData(dataMap, id);
-		} catch (SQLException e)
-		{
-			e.printStackTrace();
-		}
+		databaseServices.get(db_table).updateData(dataMap, id);
 	}
 
-	public boolean existsData(int id, DB_Table db_table)
+	public boolean existsData(int id, DB_Table db_table) throws SQLException
 	{
-		try {
-			return databaseServices.get(db_table).existsData(id);
-		} catch(SQLException e)
-		{
-			e.printStackTrace();
-		}
-		return false;
+		return databaseServices.get(db_table).existsData(id);
 	}
 
 }
